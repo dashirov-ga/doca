@@ -1,6 +1,6 @@
 // this is passed to json-schema-example-loader
 export default {
-  title: 'Example API Documentation',
+  title: 'Example Schema Documentation',
   // enhance your CURL examples by base url and request headers...
   /*curl: {
     baseUrl: 'https://api.example.com/client/v4',

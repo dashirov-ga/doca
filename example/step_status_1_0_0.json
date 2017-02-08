@@ -1,0 +1,91 @@
+{
+  "$schema": "http://iglucentral.com/schemas/com.snowplowanalytics.self-desc/schema/jsonschema/1-0-0#",
+  "description": "Schema for an Batch Job  Step Status Event",
+  "self": {
+    "vendor": "monitoring.batch",
+    "name": "step_status",
+    "format": "jsonschema",
+    "version": "1-0-0"
+  },
+  "title": "Step Status",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "example": "cd2cfb80-f6d3-47d2-835c-8c3e5342139a",
+      "maxLength": 32
+    },
+    "name": {
+      "type": "string",
+      "example": "nameOfStep",
+      "description": "This describes the name of the step",
+      "maxLength": 255
+    },
+    "account": {
+      "type": "integer",
+      "description": "The id of the account processed in this step",
+      "example": 6407762108
+    },
+    "state": {
+      "type": "string",
+      "example": "COMPLETED",
+      "enum": ["PENDING", "RUNNING", "COMPLETED", "CANCELLED", "FAILED" ]
+    },
+    "started_at": {
+      "type": ["string","null"],
+      "example": "Fri Jan 20 12:12:08 EST 2017",
+      "format": "date-time"
+    },
+    "ended_at": {
+      "type": ["string", "null"],
+      "example": "Fri Jan 20 12:12:09 EST 2017",
+      "format": "date-time"
+    }
+  },
+  "required": ["name", "state"],
+  "jsonpaths": [
+        "$.schema.vendor",
+        "$.schema.name",
+        "$.schema.format",
+        "$.schema.version",
+        "$.hierarchy.rootId",
+        "$.hierarchy.rootTstamp",
+        "$.hierarchy.refRoot",
+        "$.hierarchy.refTree",
+        "$.hierarchy.refParent",
+        "$.data.name",
+        "$.data.state",
+        "$.data.account",
+        "$.data.ended_at",
+        "$.data.run_id",
+        "$.data.started_at"
+    ],
+"sql": "CREATE SCHEMA IF NOT EXISTS atomic;\n
+\n
+CREATE TABLE IF NOT EXISTS atomic.monitoring_batch_step_status_1 (\n
+    'schema_vendor'  VARCHAR(128)  ENCODE RUNLENGTH NOT NULL,\n
+    'schema_name'    VARCHAR(128)  ENCODE RUNLENGTH NOT NULL,\n
+    'schema_format'  VARCHAR(128)  ENCODE RUNLENGTH NOT NULL,\n
+    'schema_version' VARCHAR(128)  ENCODE RUNLENGTH NOT NULL,\n
+    'root_id'        CHAR(36)      ENCODE RAW       NOT NULL,\n
+    'root_tstamp'    TIMESTAMP     ENCODE LZO       NOT NULL,\n
+    'ref_root'       VARCHAR(255)  ENCODE RUNLENGTH NOT NULL,\n
+    'ref_tree'       VARCHAR(1500) ENCODE RUNLENGTH NOT NULL,\n
+    'ref_parent'     VARCHAR(255)  ENCODE RUNLENGTH NOT NULL,\n
+    'name'           VARCHAR(255)  ENCODE LZO       NOT NULL,\n
+    'state'          VARCHAR(9)    ENCODE LZO       NOT NULL,\n
+    'account'        BIGINT        ENCODE LZO,\n
+    'ended_at'       TIMESTAMP     ENCODE LZO,\n
+    'run_id'         VARCHAR(32)   ENCODE LZO,\n
+    'started_at'     TIMESTAMP     ENCODE LZO,\n
+    FOREIGN KEY (root_id) REFERENCES atomic.events(event_id)\n
+)\n
+DISTSTYLE KEY\n
+DISTKEY (root_id)\n
+SORTKEY (root_tstamp);\n
+\n
+COMMENT ON TABLE atomic.monitoring_batch_step_status_1 IS 'iglu:monitoring.batch/step_status/jsonschema/1-0-0';\n
+",
+
+  "additionalProperties": false
+}

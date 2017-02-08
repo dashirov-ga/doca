@@ -1,0 +1,54 @@
+{
+  "$schema": "http://iglucentral.com/schemas/com.snowplowanalytics.self-desc/schema/jsonschema/1-0-0#",
+  "description": "Schema for an Batch Job Succeeded Event",
+  "self": {
+    "vendor": "monitoring.batch",
+    "name": "job_succeeded",
+    "format": "jsonschema",
+    "version": "1-0-0"
+  },
+  "title": "Job Succeeded",
+  "type": "object",
+  "properties": {
+    "run_id" : {
+      "type": "string",
+      "example": "cd2cfb80-f6d3-47d2-835c-8c3e5342139a",
+      "maxLength": 32
+    }
+  },
+  "jsonpaths": [
+        "$.schema.vendor",
+        "$.schema.name",
+        "$.schema.format",
+        "$.schema.version",
+        "$.hierarchy.rootId",
+        "$.hierarchy.rootTstamp",
+        "$.hierarchy.refRoot",
+        "$.hierarchy.refTree",
+        "$.hierarchy.refParent",
+        "$.data.run_id"
+    ],
+"sql": "CREATE SCHEMA IF NOT EXISTS atomic;\n
+\n
+CREATE TABLE IF NOT EXISTS atomic.monitoring_batch_job_succeeded_1 (\n
+    'schema_vendor'  VARCHAR(128)  ENCODE RUNLENGTH NOT NULL,\n
+    'schema_name'    VARCHAR(128)  ENCODE RUNLENGTH NOT NULL,\n
+    'schema_format'  VARCHAR(128)  ENCODE RUNLENGTH NOT NULL,\n
+    'schema_version' VARCHAR(128)  ENCODE RUNLENGTH NOT NULL,\n
+    'root_id'        CHAR(36)      ENCODE RAW       NOT NULL,\n
+    'root_tstamp'    TIMESTAMP     ENCODE LZO       NOT NULL,\n
+    'ref_root'       VARCHAR(255)  ENCODE RUNLENGTH NOT NULL,\n
+    'ref_tree'       VARCHAR(1500) ENCODE RUNLENGTH NOT NULL,\n
+    'ref_parent'     VARCHAR(255)  ENCODE RUNLENGTH NOT NULL,\n
+    'run_id'         VARCHAR(32)   ENCODE LZO,\n
+    FOREIGN KEY (root_id) REFERENCES atomic.events(event_id)\n
+)\n
+DISTSTYLE KEY\n
+DISTKEY (root_id)\n
+SORTKEY (root_tstamp);\n
+\n
+COMMENT ON TABLE atomic.monitoring_batch_job_succeeded_1 IS 'iglu:monitoring.batch/job_succeeded/jsonschema/1-0-0';\n
+",
+
+  "additionalProperties": false
+}
