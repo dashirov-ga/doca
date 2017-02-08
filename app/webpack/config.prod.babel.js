@@ -43,11 +43,11 @@ export default {
         loader: 'css-loader',
       }),
     }, {
-      test: /\.json$/,
+      test: /(?:\.json|\d+-\d+-\d+)$/,
       include: path.resolve(__dirname, '../node_modules'),
       loader: 'json-loader',
     }, {
-      test: /\.json$/,
+      test: /(?:\.json|\d+-\d+-\d+)$/,
       exclude: path.resolve(__dirname, '../node_modules'),
       use: [
         `json-schema-example-loader?${JSON.stringify(config)}`,
